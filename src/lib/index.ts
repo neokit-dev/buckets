@@ -19,27 +19,27 @@ export class BucketsPlugin {
 	}
 
 	metadata(path: string) {
-		return this.metadataFn(path);
+		return (this.metadataFn ?? (() => Promise.resolve()))(path);
 	}
 
 	download(path: string) {
-		return this.downloadFn(path);
+		return (this.downloadFn ?? (() => Promise.resolve(new ArrayBuffer(0))))(path);
 	}
 
 	upload(path: string, data: ArrayBuffer) {
-		return this.uploadFn(path, data);
+		return (this.uploadFn ?? (() => Promise.resolve()))(path, data);
 	}
 
 	remove(path: string) {
-		return this.removeFn(path);
+		return (this.removeFn ?? (() => Promise.resolve()))(path);
 	}
 }
 
 export interface BucketsPluginOptions extends PluginOptions {
-	metadataFn: (path: string) => Promise<unknown>;
-	downloadFn: (path: string) => Promise<ArrayBuffer>;
-	uploadFn: (path: string, data: ArrayBuffer) => Promise<unknown>;
-	removeFn: (path: string) => Promise<unknown>;
+	metadataFn?: (path: string) => Promise<unknown>;
+	downloadFn?: (path: string) => Promise<ArrayBuffer>;
+	uploadFn?: (path: string, data: ArrayBuffer) => Promise<unknown>;
+	removeFn?: (path: string) => Promise<unknown>;
 }
 
 export function plugin(options: BucketsPluginOptions): Plugin {
